@@ -1,10 +1,22 @@
 mod dsu;
 
+use clap::Parser;
 use dsu::Dsu;
 use rand::{seq::SliceRandom, thread_rng};
 
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// The height of the map.
+    height: usize,
+
+    /// The width of the map.
+    width: usize,
+}
+
 fn main() {
-    let map = Map::new_rand(10, 20);
+    let args = Args::parse();
+    let map = Map::new_rand(args.height, args.width);
     map.dump();
 }
 
@@ -49,7 +61,7 @@ impl Map {
         let mut x_fences = vec![vec![true; w]; h];
         let mut y_fences = vec![vec![true; w]; h];
 
-        let mut cnt = (((w * h - 1) + (w - 1) * (h - 1)) as f64 / 1.5) as usize;
+        let mut cnt = w * h - 1;
         for e in edges.iter() {
             let Edge {
                 point: (r, c),
